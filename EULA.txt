@@ -1,0 +1,66 @@
+EVENTRA END USER LICENSE AGREEMENT (EULA)
+
+IMPORTANT – READ CAREFULLY:
+
+This End User License Agreement (“Agreement” or “EULA”) is a legal agreement between you (either an individual or a single entity, “Licensee”) and [Your Company Name] (“Licensor”, "we", "us", or "Eventra") for the use of the Eventra software and associated documentation (“Software”).
+
+BY INSTALLING, COPYING, OR OTHERWISE USING THE SOFTWARE, YOU AGREE TO BE BOUND BY THE TERMS OF THIS AGREEMENT. IF YOU DO NOT ACCEPT THESE TERMS, DO NOT INSTALL OR USE THE SOFTWARE.
+
+1. LICENSE GRANT
+
+    a. Individual Plan:  
+    Eventra grants you a non-exclusive, non-transferable, non-sublicensable, and non-distributable license to install and use one (1) copy of the Software on one computer for your personal or single-business use only.
+
+    b. Enterprise Plan:  
+    If you have purchased an enterprise license, Eventra grants your organization a non-exclusive, non-transferable, non-sublicensable, and non-distributable license to install and use the Software on the number of seats or within the scope agreed in your enterprise license documentation.
+
+2. RESTRICTIONS
+
+    - You may NOT sell, rent, lease, lend, sublicense, distribute, share, publish, or otherwise make the Software or related materials available to any third party, in whole or in part.
+    - You may NOT copy, reverse engineer, decompile, disassemble, modify, translate, create derivative works, or attempt to derive the source code from the Software.
+    - Sharing, distributing, or transferring the Software, your license, or any activation keys provided is strictly prohibited.
+    - You may NOT publish, disclose, or share any portion of the Software’s source code or proprietary algorithms.
+
+3. OWNERSHIP AND COPYRIGHT
+
+    All rights, title, and interest in and to the Software (including but not limited to all copyrights, trademarks, and trade secrets) remain the sole and exclusive property of Eventra and its licensors. The Software is licensed, not sold.
+
+4. UPGRADES, UPDATES, AND PLANS
+
+    - Access to future upgrades, updates, or features may be subject to additional fees or limited to your purchased plan.
+    - Features available to you depend on the selected plan (Individual or Enterprise), as outlined at time of purchase or in your license documents.
+
+5. SUPPORT
+
+    Support and maintenance may be provided by Eventra at its sole discretion and according to the support policy applicable to your license plan.
+
+6. PAYMENT, TERMINATION, AND REFUNDS
+
+    - Your license becomes active upon full payment.
+    - This Agreement and your license immediately terminate if you breach any term herein. No refund is due for terminated licenses.
+    - Eventra reserves the right to terminate non-compliant use or fraudulent licenses.
+
+7. DATA PRIVACY
+
+    Eventra may collect technical and usage data to improve the Software. Your use of the Software is also governed by our Privacy Policy.
+
+8. NO WARRANTY; LIMITATION OF LIABILITY
+
+    THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND. EVENTRA DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.  
+    IN NO EVENT SHALL EVENTRA OR ITS LICENSORS BE LIABLE FOR ANY INDIRECT, INCIDENTAL, CONSEQUENTIAL, SPECIAL, OR PUNITIVE DAMAGES, INCLUDING LOSS OF PROFITS, BUSINESS INTERRUPTION, LOSS OF DATA, OR ANY OTHER DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE SOFTWARE, EVEN IF EVENTRA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+9. GOVERNING LAW
+
+    This Agreement shall be governed by the laws of [Your Jurisdiction/Country]. Any disputes shall be resolved in the courts of [your city/country].
+
+10. MISCELLANEOUS
+
+    If any provision is found to be unenforceable, the remainder of the Agreement will remain valid and in effect. This EULA constitutes the entire agreement between you and Eventra concerning the Software.
+
+---
+
+For questions about this software or this agreement, contact:  
+Eventra 
+Email : adityabagari77@gmail.com
+
+COPYRIGHT © [2025] Eventra. All rights reserved.

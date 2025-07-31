@@ -1,0 +1,62 @@
+{
+  "name": "Eventra",
+  "version": "1.0.0",
+  "main": "public/electron.js",
+  "homepage": "./",
+  "author": "Eventra Team",
+  "description": "Event Management Solution for Event Management Companies",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "electron:dev": "concurrently \"cross-env BROWSER=none npm start\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron:build": "npm run build && electron-builder build --win --publish never",
+    "electron:deploy": "electron-builder build --win --publish always"
+  },
+  "keywords": [
+    "event",
+    "management",
+    "saas",
+    "electron",
+    "react"
+  ],
+  "license": "SEE LICENSE IN EULA.txt",
+  "dependencies": {
+    "@react-pdf/renderer": "^4.3.0",
+    "autoprefixer": "^10.4.21",
+    "chart.js": "^4.5.0",
+    "concurrently": "^9.2.0",
+    "cross-env": "^10.0.0",
+    "date-fns": "^4.1.0",
+    "firebase": "^12.0.0",
+    "formik": "^2.4.6",
+    "postcss": "^8.5.6",
+    "react": "^19.1.1",
+    "react-chartjs-2": "^5.3.0",
+    "react-dom": "^19.1.1",
+    "react-icons": "^5.5.0",
+    "react-router-dom": "^7.7.1",
+    "react-scripts": "^5.0.1",
+    "tailwindcss": "^3.4.17",
+    "uuid": "^11.1.0",
+    "wait-on": "^8.0.4",
+    "yup": "^1.6.1"
+  },
+  "devDependencies": {
+    "electron": "^37.2.4",
+    "electron-builder": "^26.0.12"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
