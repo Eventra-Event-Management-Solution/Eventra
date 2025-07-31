@@ -32,9 +32,9 @@ useEffect(() => {
       setLoading(true);
       setError(null);
       
-      const invoicesRef = collection(db, 'invoices');
-      // Add where clause to filter by user ID
-      const invoicesQuery = query(invoicesRef, where("userId", "==", user.uid), orderBy('createdAt', 'desc'));
+      const invoicesRef = collection(db, 'users', user.uid, 'invoices');
+      // Query invoices from user's collection
+      const invoicesQuery = query(invoicesRef, orderBy('createdAt', 'desc'));
       const invoicesSnapshot = await getDocs(invoicesQuery);
       
       const invoicesList = [];
@@ -48,7 +48,7 @@ useEffect(() => {
         // Fetch client data if client ID exists
         if (invoiceData.clientId) {
           try {
-            const clientDoc = await getDoc(doc(db, 'clients', invoiceData.clientId));
+            const clientDoc = await getDoc(doc(db, 'users', user.uid, 'clients', invoiceData.clientId));
             if (clientDoc.exists()) {
               invoiceData.client = {
                 id: clientDoc.id,
@@ -63,7 +63,7 @@ useEffect(() => {
         // Fetch event data if event ID exists
         if (invoiceData.eventId) {
           try {
-            const eventDoc = await getDoc(doc(db, 'events', invoiceData.eventId));
+            const eventDoc = await getDoc(doc(db, 'users', user.uid, 'events', invoiceData.eventId));
             if (eventDoc.exists()) {
               invoiceData.event = {
                 id: eventDoc.id,
@@ -93,15 +93,13 @@ useEffect(() => {
   };
 
   const handleDeleteConfirm = async () => {
-    if (!invoiceToDelete) return;
-    
+    if (!invoiceToDelete || !user) return;
     try {
-      await deleteDoc(doc(db, 'invoices', invoiceToDelete.id));
+      await deleteDoc(doc(db, 'users', user.uid, 'invoices', invoiceToDelete.id));
       setInvoices(invoices.filter(invoice => invoice.id !== invoiceToDelete.id));
       setShowDeleteModal(false);
       setInvoiceToDelete(null);
       setSuccessMessage('Invoice deleted successfully');
-      
       // Clear success message after 3 seconds
       setTimeout(() => {
         setSuccessMessage('');

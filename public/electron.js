@@ -1,18 +1,8 @@
 const { app, BrowserWindow, ipcMain, nativeImage } = require("electron");
 const path = require("path");
-const http = require("http");
 const isDev = process.env.NODE_ENV !== "production";
 
 let mainWindow;
-let server;
-
-function startServer() {
-  server = http.createServer((req, res) => {});
-
-  server.listen(3000, "127.0.0.1", () => {
-    console.log("Server running at http://127.0.0.1:3000/");
-  });
-}
 
 function createWindow() {
   const iconPath = path.join(__dirname, "./logo.ico"); // Adjust path as needed
@@ -32,29 +22,30 @@ function createWindow() {
   });
   mainWindow.setMenu(null);
   mainWindow.maximize();
+  mainWindow.webContents.openDevTools();
 
+  // Load the app
   const startUrl = isDev
     ? "http://localhost:3000"
     : `file://${path.join(__dirname, "../build/index.html")}`;
 
   mainWindow.loadURL(startUrl);
 
+  // Emitted when the window is closed
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
 }
 
+// Create window when Electron is ready
 app.whenReady().then(createWindow);
 
+// Quit when all windows are closed
 app.on("window-all-closed", () => {
+  // On macOS it is common for applications to stay open until the user quits
   if (process.platform !== "darwin") {
     app.quit();
   }
-});
-
-app.on("ready", () => {
-  startServer();
-  createWindow();
 });
 
 app.on("activate", () => {

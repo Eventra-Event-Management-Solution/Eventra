@@ -5,6 +5,7 @@ import { db } from '../../services/firebase';
 import { useLocation } from '../../hooks/useLocation';
 import { FiCalendar, FiClock, FiUser, FiMail, FiPhone, FiMapPin, FiDollarSign, FiFileText, FiEdit, FiTrash2, FiSend, FiAlertCircle, FiCheckCircle, FiDownload } from 'react-icons/fi';
 import { Document, Page, Text, View, StyleSheet, PDFDownloadLink } from '@react-pdf/renderer';
+import { useAuth } from '../../hooks/useAuth';
 
 // Create styles
 const styles = StyleSheet.create({
@@ -157,6 +158,7 @@ const InvoicePDF = ({ invoice, client, event, formatCurrency, formatDate }) => (
 );
 
 const InvoiceDetail = () => {
+  const {user} = useAuth();
   const { id } = useParams();
   const navigate = useNavigate();
   const { formatCurrency } = useLocation();
@@ -176,7 +178,7 @@ const InvoiceDetail = () => {
       setLoading(true);
       setError(null);
       
-      const invoiceDoc = await getDoc(doc(db, 'invoices', id));
+      const invoiceDoc = await getDoc(doc(db, 'users', user.uid, 'invoices', id));
       
       if (invoiceDoc.exists()) {
         const invoiceData = { id: invoiceDoc.id, ...invoiceDoc.data() };
@@ -194,7 +196,7 @@ const InvoiceDetail = () => {
         
         // Fetch event data if event ID exists
         if (invoiceData.eventId) {
-          const eventDoc = await getDoc(doc(db, 'events', invoiceData.eventId));
+          const eventDoc = await getDoc(doc(db, 'users', user.uid, 'events', invoiceData.eventId));
           if (eventDoc.exists()) {
             const eventData = { id: eventDoc.id, ...eventDoc.data() };
             setEvent(eventData);
@@ -218,7 +220,7 @@ const InvoiceDetail = () => {
 
   const handleDeleteConfirm = async () => {
     try {
-      await deleteDoc(doc(db, 'invoices', id));
+      await deleteDoc(doc(db, 'users', user.uid, 'invoices', id));
       navigate('/invoices', { state: { message: 'Invoice deleted successfully' } });
     } catch (err) {
       console.error('Error deleting invoice:', err);

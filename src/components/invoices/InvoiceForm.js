@@ -12,11 +12,13 @@ import {
   FiTrash2, FiCalendar, FiDollarSign 
 } from 'react-icons/fi';
 import { useLocation } from '../../contexts/LocationContext';
+import { useAuth } from '../../hooks/useAuth';
 
 const InvoiceForm = ({ mode = 'create' }) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { formatCurrency, getCurrencySymbol } = useLocation();
+  const { user } = useAuth();
   const [invoice, setInvoice] = useState(null);
   const [clients, setClients] = useState([]);
   const [events, setEvents] = useState([]);
@@ -33,7 +35,7 @@ const InvoiceForm = ({ mode = 'create' }) => {
         setError(null);
         
         // Fetch clients
-        const clientsRef = collection(db, 'clients');
+        const clientsRef = collection(db, 'users', user.uid, 'clients');
         const clientsQuery = query(clientsRef, orderBy('lastName'));
         const clientsSnapshot = await getDocs(clientsQuery);
         const clientsList = clientsSnapshot.docs.map(doc => ({
@@ -43,7 +45,7 @@ const InvoiceForm = ({ mode = 'create' }) => {
         setClients(clientsList);
         
         // Fetch events
-        const eventsRef = collection(db, 'events');
+        const eventsRef = collection(db, 'users', user.uid, 'events');
         const eventsQuery = query(eventsRef, orderBy('date'));
         const eventsSnapshot = await getDocs(eventsQuery);
         const eventsList = eventsSnapshot.docs.map(doc => ({
@@ -54,7 +56,7 @@ const InvoiceForm = ({ mode = 'create' }) => {
         
         // If editing, fetch invoice data
         if (mode === 'edit' && id) {
-          const invoiceDoc = await getDoc(doc(db, 'invoices', id));
+          const invoiceDoc = await getDoc(doc(db, 'users', user.uid, 'invoices', id));
           
           if (invoiceDoc.exists()) {
             const invoiceData = { id: invoiceDoc.id, ...invoiceDoc.data() };
@@ -234,7 +236,7 @@ const InvoiceForm = ({ mode = 'create' }) => {
       
       if (mode === 'edit' && id) {
         // Update existing invoice
-        await setDoc(doc(db, 'invoices', id), invoiceData, { merge: true });
+        await setDoc(doc(db, 'users', user.uid, 'invoices', id), invoiceData, { merge: true });
         setSuccess(true);
         setTimeout(() => {
           navigate(`/invoices/${id}`);
@@ -242,7 +244,7 @@ const InvoiceForm = ({ mode = 'create' }) => {
       } else {
         // Create new invoice
         invoiceData.createdAt = serverTimestamp();
-        const docRef = await addDoc(collection(db, 'invoices'), invoiceData);
+        const docRef = await addDoc(collection(db, 'users', user.uid, 'invoices'), invoiceData);
         setSuccess(true);
         setTimeout(() => {
           navigate(`/invoices/${docRef.id}`);

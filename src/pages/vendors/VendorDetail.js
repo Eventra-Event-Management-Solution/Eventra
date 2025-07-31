@@ -4,10 +4,11 @@ import { doc, getDoc, deleteDoc, collection, query, where, getDocs } from 'fireb
 import { db } from '../../services/firebase';
 import { format } from 'date-fns';
 import { 
-  FiEdit, FiTrash2, FiUser, 
+  FiEdit, FiTrash2, FiUser, FiAlertCircle,
   FiMail, FiPhone, FiGlobe, FiMapPin, FiCalendar, FiDollarSign, FiFileText
 } from 'react-icons/fi';
 import { useLocation } from '../../contexts/LocationContext';
+import { useAuth } from '../../hooks/useAuth';
 
 const VendorDetail = () => {
   const { id } = useParams();
@@ -23,12 +24,12 @@ const VendorDetail = () => {
     fetchVendor();
   }, [id]);
 
+  const { user } = useAuth();
   const fetchVendor = async () => {
     try {
       setLoading(true);
       setError(null);
-      
-      const vendorDoc = await getDoc(doc(db, 'vendors', id));
+      const vendorDoc = await getDoc(doc(db, 'users', user.uid, 'vendors', id));
       
       if (vendorDoc.exists()) {
         const vendorData = { id: vendorDoc.id, ...vendorDoc.data() };

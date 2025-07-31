@@ -4,11 +4,24 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { doc, getDoc, setDoc, collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../services/firebase';
-import { FiSave, FiX, FiAlertCircle, FiCheckCircle } from 'react-icons/fi';
+import { 
+  FiSave, 
+  FiX, 
+  FiAlertCircle, 
+  FiCheckCircle,
+  FiBriefcase,
+  FiMail,
+  FiPhone,
+  FiMapPin,
+  FiDollarSign,
+  FiGlobe
+} from 'react-icons/fi';
+import { useAuth } from '../../hooks/useAuth';
 
 const VendorForm = ({ mode = 'create' }) => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { user } = useAuth();
   const [vendor, setVendor] = useState(null);
   const [loading, setLoading] = useState(mode === 'edit');
   const [error, setError] = useState(null);
@@ -25,8 +38,8 @@ const VendorForm = ({ mode = 'create' }) => {
       setLoading(true);
       setError(null);
       
-      const vendorDoc = await getDoc(doc(db, 'vendors', id));
-      
+      // Fetch vendor from user-scoped subcollection
+      const vendorDoc = await getDoc(doc(db, 'users', user.uid, 'vendors', id));
       if (vendorDoc.exists()) {
         setVendor({ id: vendorDoc.id, ...vendorDoc.data() });
       } else {
@@ -69,6 +82,10 @@ const VendorForm = ({ mode = 'create' }) => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
+      if (!user) {
+        setError('You must be logged in to perform this action');
+        return;
+      }
       setError(null);
       setSuccess(false);
       
@@ -80,7 +97,7 @@ const VendorForm = ({ mode = 'create' }) => {
       
       if (mode === 'edit' && id) {
         // Update existing vendor
-        await setDoc(doc(db, 'vendors', id), vendorData, { merge: true });
+        await setDoc(doc(db, 'users', user.uid, 'vendors', id), vendorData, { merge: true });
         setSuccess(true);
         setTimeout(() => {
           navigate(`/vendors/${id}`);
@@ -88,7 +105,7 @@ const VendorForm = ({ mode = 'create' }) => {
       } else {
         // Create new vendor
         vendorData.createdAt = serverTimestamp();
-        const docRef = await addDoc(collection(db, 'vendors'), vendorData);
+        const docRef = await addDoc(collection(db, 'users', user.uid, 'vendors'), vendorData);
         setSuccess(true);
         setTimeout(() => {
           navigate(`/vendors/${docRef.id}`);

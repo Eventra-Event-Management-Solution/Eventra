@@ -5,11 +5,24 @@ import * as Yup from 'yup';
 import { collection, doc, getDoc, setDoc, updateDoc, query, getDocs } from 'firebase/firestore';
 import { db } from '../../services/firebase';
 import { v4 as uuidv4 } from 'uuid';
-import { FiSave, FiX, FiAlertCircle, FiCheckCircle } from 'react-icons/fi';
+import { 
+  FiSave, 
+  FiX, 
+  FiAlertCircle, 
+  FiCheckCircle,
+  FiCalendar,
+  FiClock,
+  FiMapPin,
+  FiUser,
+  FiDollarSign,
+  FiTag
+} from 'react-icons/fi';
+import { useAuth } from '../../hooks/useAuth';
 
 const EventForm = ({ mode = 'create' }) => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(mode === 'edit');
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -48,7 +61,7 @@ const EventForm = ({ mode = 'create' }) => {
     const fetchData = async () => {
       try {
         // Fetch clients
-        const clientsQuery = query(collection(db, 'clients'));
+        const clientsQuery = query(collection(db, 'users', user.uid, 'clients'));
         const clientsSnapshot = await getDocs(clientsQuery);
         const clientsList = clientsSnapshot.docs.map(doc => ({
           id: doc.id,
@@ -56,8 +69,8 @@ const EventForm = ({ mode = 'create' }) => {
         }));
         setClients(clientsList);
 
-        // Fetch vendors
-        const vendorsQuery = query(collection(db, 'vendors'));
+        // Fetch vendors from user's collection
+        const vendorsQuery = query(collection(db, 'users', user.uid, 'vendors'));
         const vendorsSnapshot = await getDocs(vendorsQuery);
         const vendorsList = vendorsSnapshot.docs.map(doc => ({
           id: doc.id,
@@ -65,13 +78,12 @@ const EventForm = ({ mode = 'create' }) => {
         }));
         setVendors(vendorsList);
 
-        // If editing, fetch event data
+        // If editing, fetch event data from user's collection
         if (mode === 'edit' && id) {
-          const eventDoc = await getDoc(doc(db, 'events', id));
+          const eventDoc = await getDoc(doc(db, 'users', user.uid, 'events', id));
           if (eventDoc.exists()) {
             const eventData = eventDoc.data();
             const date = eventData.date?.toDate ? eventData.date.toDate() : new Date(eventData.date);
-            
             // Format date and times for form inputs
             const formattedDate = date.toISOString().split('T')[0];
             const hours = date.getHours();
@@ -157,12 +169,16 @@ const EventForm = ({ mode = 'create' }) => {
       };
       
       if (mode === 'create') {
-        // Add created timestamp for new events
+        // Add created timestamp and userId for new events
         eventData.createdAt = new Date();
+        eventData.userId = user.uid; // Add user ID to the document
         
         // Generate a new ID or use Firebase auto-ID
         const eventId = id || uuidv4();
-        await setDoc(doc(db, 'events', eventId), eventData);
+        
+        // Create in the nested structure
+        const eventRef = doc(db, `users/${user.uid}/events`, eventId);
+        await setDoc(eventRef, eventData);
         setSuccess(true);
         
         // Redirect after short delay
@@ -171,7 +187,7 @@ const EventForm = ({ mode = 'create' }) => {
         }, 1500);
       } else {
         // Update existing event
-        await updateDoc(doc(db, 'events', id), eventData);
+        await updateDoc(doc(db, 'users', user.uid, 'events', id), eventData);
         setSuccess(true);
         
         // Redirect after short delay

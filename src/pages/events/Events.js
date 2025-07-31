@@ -32,9 +32,9 @@ useEffect(() => {
       setLoading(true);
       setError(null);
       
-      const eventsRef = collection(db, 'events');
-      // Add where clause to filter by user ID
-      const eventsQuery = query(eventsRef, where("userId", "==", user.uid), orderBy('date', 'desc'));
+      const eventsRef = collection(db, `users/${user.uid}/events`);
+      // No need for where clause since we're already in user's collection
+      const eventsQuery = query(eventsRef, orderBy('date', 'desc'));
       const eventsSnapshot = await getDocs(eventsQuery);
       
       const eventsList = eventsSnapshot.docs.map(doc => ({
@@ -58,15 +58,13 @@ useEffect(() => {
   };
 
   const handleDeleteConfirm = async () => {
-    if (!eventToDelete) return;
-    
+    if (!eventToDelete || !user) return;
     try {
-      await deleteDoc(doc(db, 'events', eventToDelete.id));
+      await deleteDoc(doc(db, 'users', user.uid, 'events', eventToDelete.id));
       setEvents(events.filter(event => event.id !== eventToDelete.id));
       setShowDeleteModal(false);
       setEventToDelete(null);
       setSuccessMessage('Event deleted successfully');
-      
       // Clear success message after 3 seconds
       setTimeout(() => {
         setSuccessMessage('');

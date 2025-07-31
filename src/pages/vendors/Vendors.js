@@ -32,16 +32,14 @@ useEffect(() => {
       setLoading(true);
       setError(null);
       
-      const vendorsRef = collection(db, 'vendors');
-      // Add where clause to filter by user ID
-      const vendorsQuery = query(vendorsRef, where("userId", "==", user.uid), orderBy('name'));
+      const vendorsRef = collection(db, `users/${user.uid}/vendors`);
+      // No need for where clause since we're already in user's collection
+      const vendorsQuery = query(vendorsRef, orderBy('name'));
       const vendorsSnapshot = await getDocs(vendorsQuery);
-      
       const vendorsList = vendorsSnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
-      
       setVendors(vendorsList);
     } catch (err) {
       console.error('Error fetching vendors:', err);
@@ -60,7 +58,7 @@ useEffect(() => {
     if (!vendorToDelete) return;
     
     try {
-      await deleteDoc(doc(db, 'vendors', vendorToDelete.id));
+      await deleteDoc(doc(db, 'users', user.uid, 'vendors', vendorToDelete.id));
       setVendors(vendors.filter(vendor => vendor.id !== vendorToDelete.id));
       setShowDeleteModal(false);
       setVendorToDelete(null);

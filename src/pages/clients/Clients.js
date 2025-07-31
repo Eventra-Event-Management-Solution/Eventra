@@ -41,11 +41,10 @@ const Clients = () => {
       setLoading(true);
       setError(null);
 
-      const clientsRef = collection(db, "clients");
-      // Add where clause to filter by user ID
+      const clientsRef = collection(db, `users/${user.uid}/clients`);
+      // No need for where clause since we're already in user's collection
       const clientsQuery = query(
         clientsRef,
-        where("userId", "==", user.uid),
         orderBy("lastName")
       );
       const clientsSnapshot = await getDocs(clientsQuery);
@@ -76,15 +75,13 @@ const Clients = () => {
   };
 
   const handleDeleteConfirm = async () => {
-    if (!clientToDelete) return;
-
+    if (!clientToDelete || !user) return;
     try {
-      await deleteDoc(doc(db, "clients", clientToDelete.id));
+      await deleteDoc(doc(db, "users", user.uid, "clients", clientToDelete.id));
       setClients(clients.filter((client) => client.id !== clientToDelete.id));
       setShowDeleteModal(false);
       setClientToDelete(null);
       setSuccessMessage("Client deleted successfully");
-
       // Clear success message after 3 seconds
       setTimeout(() => {
         setSuccessMessage("");

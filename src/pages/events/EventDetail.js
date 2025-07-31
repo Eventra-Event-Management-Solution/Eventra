@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { doc, getDoc, collection, query, where, getDocs, deleteDoc } from 'firebase/firestore';
 import { db } from '../../services/firebase';
 import { format } from 'date-fns';
+import { useAuth } from '../../hooks/useAuth';
 import {
   FiEdit,
   FiTrash2,
@@ -29,7 +30,7 @@ const EventDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-
+  const {user} = useAuth();
   useEffect(() => {
     const fetchEventData = async () => {
       try {
@@ -37,10 +38,10 @@ const EventDetail = () => {
         setError(null);
 
         // Fetch event data
-        const eventDoc = await getDoc(doc(db, 'events', id));
+        const eventDoc = await getDoc(doc(db, 'users', user.uid, 'events', id));
         if (!eventDoc.exists()) {
           setError('Event not found');
-          setLoading(false);
+          setLoading(faslse);
           return;
         }
 
@@ -59,7 +60,7 @@ const EventDetail = () => {
 
         // Fetch client data if clientId exists
         if (eventData.clientId) {
-          const clientDoc = await getDoc(doc(db, 'clients', eventData.clientId));
+          const clientDoc = await getDoc(doc(db, 'users', user.uid, 'clients', eventData.clientId));
           if (clientDoc.exists()) {
             setClient({
               id: clientDoc.id,
@@ -71,7 +72,7 @@ const EventDetail = () => {
         // Fetch vendors if vendorIds exist
         if (eventData.vendorIds && eventData.vendorIds.length > 0) {
           const vendorPromises = eventData.vendorIds.map(vendorId => 
-            getDoc(doc(db, 'vendors', vendorId))
+            getDoc(doc(db, 'users', user.uid, 'vendors', vendorId))
           );
           const vendorDocs = await Promise.all(vendorPromises);
           const vendorData = vendorDocs
@@ -101,7 +102,7 @@ const EventDetail = () => {
 
   const handleDeleteConfirm = async () => {
     try {
-      await deleteDoc(doc(db, 'events', id));
+      await deleteDoc(doc(db, 'users', user.uid, 'events', id));
       setShowDeleteModal(false);
       navigate('/events', { state: { message: 'Event deleted successfully' } });
     } catch (err) {

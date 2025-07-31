@@ -5,12 +5,22 @@ import * as Yup from 'yup';
 import { collection, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../services/firebase';
 import { v4 as uuidv4 } from 'uuid';
-import { FiSave, FiX, FiAlertCircle, FiCheckCircle } from 'react-icons/fi';
+import { 
+  FiSave, 
+  FiX, 
+  FiAlertCircle, 
+  FiCheckCircle,
+  FiUser,
+  FiMail,
+  FiPhone,
+  FiMapPin
+} from 'react-icons/fi';
 import { useAuth } from '../../hooks/useAuth';
 
 const ClientForm = ({ mode = 'create' }) => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(mode === 'edit');
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -48,7 +58,7 @@ const ClientForm = ({ mode = 'create' }) => {
     const fetchClient = async () => {
       if (mode === 'edit' && id) {
         try {
-          const clientDoc = await getDoc(doc(db, 'clients', id));
+          const clientDoc = await getDoc(doc(db, 'users', user.uid, 'clients', id));
           if (clientDoc.exists()) {
             setInitialValues({
               ...initialValues,
@@ -71,7 +81,6 @@ const ClientForm = ({ mode = 'create' }) => {
     }
   }, [id, mode]);
 
-  const { user } = useAuth();
   
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
@@ -92,7 +101,7 @@ const ClientForm = ({ mode = 'create' }) => {
         
         // Generate a new ID or use Firebase auto-ID
         const clientId = id || uuidv4();
-        await setDoc(doc(db, 'clients', clientId), clientData);
+        await setDoc(doc(db, 'users', user.uid, 'clients', clientId), clientData);
         setSuccess(true);
         
         // Redirect after short delay
@@ -101,7 +110,7 @@ const ClientForm = ({ mode = 'create' }) => {
         }, 1500);
       } else {
         // Update existing client
-        await updateDoc(doc(db, 'clients', id), clientData);
+        await updateDoc(doc(db, 'users', user.uid, 'clients', id), clientData);
         setSuccess(true);
         
         // Redirect after short delay

@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { doc, getDoc, collection, query, where, getDocs, deleteDoc } from 'firebase/firestore';
 import { db } from '../../services/firebase';
 import { format } from 'date-fns';
+import { useAuth } from '../../hooks/useAuth';
 import {
   FiEdit,
   FiTrash2,
@@ -19,6 +20,7 @@ import {
 import { useLocation } from '../../contexts/LocationContext';
 
 const ClientDetail = () => {
+  const {user} = useAuth();
   const { id } = useParams();
   const navigate = useNavigate();
   const { formatCurrency } = useLocation();
@@ -35,7 +37,7 @@ const ClientDetail = () => {
         setError(null);
 
         // Fetch client data
-        const clientDoc = await getDoc(doc(db, 'clients', id));
+        const clientDoc = await getDoc(doc(db, 'users', user.uid, 'clients', id));
         if (!clientDoc.exists()) {
           setError('Client not found');
           setLoading(false);
